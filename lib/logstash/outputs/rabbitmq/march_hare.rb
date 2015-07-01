@@ -55,10 +55,8 @@ class LogStash::Outputs::RabbitMQ
         connect
         #added
         @x = declare_exchange
-
         @connected.set(true)
-
-        @codec.on_event(&method(:publish_serialized))
+        #@codec.on_event(&method(:publish_serialized))
         #added
         retry
       end
