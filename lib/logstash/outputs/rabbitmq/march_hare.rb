@@ -53,7 +53,13 @@ class LogStash::Outputs::RabbitMQ
         sleep n
 
         connect
-        declare_exchange
+        #added
+        @x = declare_exchange
+
+        @connected.set(true)
+
+        @codec.on_event(&method(:publish_serialized))
+        #added
         retry
       end
     end
@@ -105,8 +111,8 @@ class LogStash::Outputs::RabbitMQ
       @connection_url        = "#{proto}://#{@user}@#{@host}:#{@port}#{vhost}/#{@queue}"
 
       begin
-        @conn = MarchHare.connect(@settings)
-
+        #@conn = MarchHare.connect(@settings)
+        @conn = MarchHare.connect(@settings) unless @conn && @conn.open?
         @logger.debug("Connecting to RabbitMQ. Settings: #{@settings.inspect}, queue: #{@queue.inspect}")
 
         @ch = @conn.create_channel
