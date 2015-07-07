@@ -40,11 +40,9 @@ class LogStash::Outputs::RabbitMQ
           @x.publish(message, :routing_key => event.sprintf(@key), :properties => { :persistent => @persistent })
         else
           @logger.warn("Tried to send a message, but not connected to RabbitMQ.")
-          
           connect
           @x = declare_exchange
           @connected.set(true)
-          
         end
       rescue MarchHare::Exception, IOError, com.rabbitmq.client.AlreadyClosedException => e
         @connected.set(false)
